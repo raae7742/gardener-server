@@ -1,7 +1,6 @@
 package jandi.server.model;
 
 import jandi.server.util.RandomGenerator;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -15,7 +14,6 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Event extends Timestamped{
 
     @Id
@@ -49,6 +47,15 @@ public class Event extends Timestamped{
             participants.add(new Participant(this.id, requestDto.getParticipants().get(i)));
     }
 
-    public void update() { }
+    // 비효율적
+    public void update(EventRequestDto requestDto) {
+        this.name = requestDto.getName();
+        this.content = requestDto.getContent();
+        this.started_at = requestDto.getStarted_at();
+        this.ended_at = requestDto.getEnded_at();
+
+        for (int i=0; i<requestDto.getParticipants().size(); i++)
+            participants.add(new Participant(this.id, requestDto.getParticipants().get(i)));
+    }
 
 }
