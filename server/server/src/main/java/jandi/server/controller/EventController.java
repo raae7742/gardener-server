@@ -38,7 +38,6 @@ public class EventController {
 
     @DeleteMapping("/events")
     public String delete(@RequestParam String id) {
-
         return eventService.delete(id);
     }
 }
