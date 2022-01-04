@@ -1,10 +1,11 @@
 package jandi.server.controller;
 
-import jandi.server.model.Event;
-import jandi.server.model.EventRequestDto;
+import jandi.server.model.*;
 import jandi.server.repository.EventRepository;
 import jandi.server.service.EventService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,30 +15,51 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
-    private final EventRepository eventRepository;
 
     @PostMapping("/events")
-    public String create(@RequestBody EventRequestDto requestDto) {
-        return eventService.create(requestDto);
-    }
+    public ResponseEntity<Message> create(@RequestBody EventRequestDto requestDto) {
+        Long id = eventService.create(requestDto);
+        Message message = Message.builder()
+                .message("성공")
+                .status(StatusEnum.OK)
+                .data(id)
+                .build();
 
-    @PatchMapping("/events")
-    public String update(@RequestPart String id, @RequestPart EventRequestDto requestDto) {
-        return eventService.update(id, requestDto);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     @GetMapping("/events")
-    public List<Event> readCurrentEvents() {
-        return eventRepository.findCurrentdEvents();
+    public ResponseEntity<Message> readCurrentEvents() {
+        List<EventResponseDto> currentEvents = eventService.findCurrentEvents();
+        Message message = Message.builder()
+                .message("성공")
+                .status(StatusEnum.OK)
+                .data(currentEvents)
+                .build();
+
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     @GetMapping("/events/past")
-    public List<Event> readPastEvents() {
-        return eventRepository.findPastEvents();
+    public ResponseEntity<Message> readPastEvents() {
+        List<EventResponseDto> pastEvents = eventService.findPastEvents();
+        Message message = Message.builder()
+                .message("성공")
+                .status(StatusEnum.OK)
+                .data(pastEvents)
+                .build();
+
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     @DeleteMapping("/events")
-    public String delete(@RequestParam String id) {
-        return eventService.delete(id);
+    public ResponseEntity<Message> delete(@RequestParam Long id) {
+        Message message = Message.builder()
+                .message("성공")
+                .status(StatusEnum.OK)
+                .data(eventService.delete(id))
+                .build();
+
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 }
