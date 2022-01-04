@@ -2,10 +2,15 @@ package jandi.server.service;
 
 import jandi.server.model.Event;
 import jandi.server.model.EventRequestDto;
+import jandi.server.model.EventResponseDto;
+import jandi.server.model.User;
 import jandi.server.repository.EventRepository;
+import jandi.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -13,29 +18,46 @@ import java.util.List;
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final UserRepository userRepository;
 
-    // 이벤트 생성
-    public String create (EventRequestDto requestDto) {
+    public Long create(EventRequestDto requestDto) {
         Event event = eventRepository.save(new Event(requestDto));
-
+        for (int i = 0; i<requestDto.getUsers().size(); i++) {
+            User user = userRepository.save(new User(requestDto.getUsers().get(i), event));
+        }
         return event.getId();
     }
 
-    // 이벤트 수정
-    public String update(String id, EventRequestDto requestDto) {
-        Event event = eventRepository.findById(id).orElseThrow(
+    public Event findOne(Long id) {
+        return eventRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
         );
-        event.update(requestDto);
-
-        return event.getId();
     }
 
-    // 이벤트 삭제
-    public String delete(String id) {
-        Event event = eventRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
-        );
+    @Transactional
+    public List<EventResponseDto> findCurrentEvents() {
+        List<Event> currentEvents = eventRepository.findCurrentEvents();
+
+        List<EventResponseDto> eventDtos = new ArrayList<>();
+        for (int i=0; i<currentEvents.size(); i++) {
+            eventDtos.add(new EventResponseDto(currentEvents.get(i)));
+        }
+        return eventDtos;
+    }
+
+    @Transactional
+    public List<EventResponseDto> findPastEvents() {
+        List<Event> pastEvents = eventRepository.findPastEvents();
+
+        List<EventResponseDto> eventDtos = new ArrayList<>();
+        for (int i=0; i<pastEvents.size(); i++) {
+            eventDtos.add(new EventResponseDto(pastEvents.get(i)));
+        }
+        return eventDtos;
+    }
+
+    public Long delete(Long id) {
+        Event event = findOne(id);
         eventRepository.delete(event);
 
         return event.getId();

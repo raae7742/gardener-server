@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ParticipantRequestDto {
+public class UserRequestDto {
     private String name;
     private String github;
 }
