@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class Attendance extends Timestamped {
 
     @Id
-    @Column(name = "attendance_id")
+    @Column(name = "attendance_id", length = 20)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -25,15 +25,15 @@ public class Attendance extends Timestamped {
     private LocalDate date;
 
     @Convert(converter = BooleanToYNConverter.class)
-    @Column(name = "is_checked")
+    @Column(name = "is_checked", length = 1)
     private boolean is_checked;
 
     @Convert(converter = BooleanToYNConverter.class)
-    @Column(name = "commit")
+    @Column(name = "commit", length = 1)
     private boolean commit;
 
     @Convert(converter = BooleanToYNConverter.class)
-    @Column(name = "til")
+    @Column(name = "til", length = 1)
     private boolean til;
 
     public void setUser(User user) {

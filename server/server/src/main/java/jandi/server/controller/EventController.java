@@ -1,14 +1,12 @@
 package jandi.server.controller;
 
 import jandi.server.model.*;
-import jandi.server.repository.EventRepository;
 import jandi.server.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,11 +28,10 @@ public class EventController {
 
     @GetMapping("/events")
     public ResponseEntity<Message> readCurrentEvents() {
-        List<EventResponseDto> currentEvents = eventService.findCurrentEvents();
         Message message = Message.builder()
                 .message("성공")
                 .status(StatusEnum.OK)
-                .data(currentEvents)
+                .data(eventService.findCurrentEvents())
                 .build();
 
         return new ResponseEntity<>(message, HttpStatus.OK);
@@ -42,11 +39,21 @@ public class EventController {
 
     @GetMapping("/events/past")
     public ResponseEntity<Message> readPastEvents() {
-        List<EventResponseDto> pastEvents = eventService.findPastEvents();
         Message message = Message.builder()
                 .message("성공")
                 .status(StatusEnum.OK)
-                .data(pastEvents)
+                .data(eventService.findPastEvents())
+                .build();
+
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    @GetMapping("/events/detail")
+    public ResponseEntity<Message> readDetail(@RequestParam Long id) {
+        Message message = Message.builder()
+                .message("성공")
+                .status(StatusEnum.OK)
+                .data(eventService.findOne(id))
                 .build();
 
         return new ResponseEntity<>(message, HttpStatus.OK);

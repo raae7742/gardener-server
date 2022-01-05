@@ -13,7 +13,7 @@ import java.util.List;
 public class User extends Timestamped {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "user_id", length = 20)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -21,10 +21,10 @@ public class User extends Timestamped {
     @JoinColumn(name = "event_id")
     private Event event;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 20)
     private String name;
 
-    @Column(name = "github")
+    @Column(name = "github", length = 20)
     private String github;
 
     @OneToMany(mappedBy = "user")

@@ -15,11 +15,11 @@ import java.util.List;
 public class Event extends Timestamped{
 
     @Id
-    @Column(name = "event_id")
+    @Column(name = "event_id", length = 20)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 20)
     private String name;
 
     @Column(name = "started_at")
@@ -28,7 +28,7 @@ public class Event extends Timestamped{
     @Column(name = "ended_at")
     private LocalDate ended_at;
 
-    @Column(name = "content")
+    @Column(name = "content", length = 45)
     private String content;
 
     @OneToMany(mappedBy = "event")
