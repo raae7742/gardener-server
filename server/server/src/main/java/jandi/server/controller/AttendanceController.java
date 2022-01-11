@@ -1,10 +1,8 @@
 package jandi.server.controller;
 
-import jandi.server.model.AttendOneResponseDto;
-import jandi.server.model.AttendTodayResponseDto;
-import jandi.server.model.Message;
-import jandi.server.model.StatusEnum;
+import jandi.server.model.*;
 import jandi.server.service.AttendanceService;
+import jandi.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +19,12 @@ import java.util.List;
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
+    private final UserService userService;
 
     @GetMapping("/checks")
     public ResponseEntity<Message> readCheckByUserId(@RequestParam Long id) {
-        List<AttendOneResponseDto> checklist = attendanceService.readOne(id);
+        User user = userService.findOne(id);
+        List<AttendOneResponseDto> checklist = attendanceService.readOne(user);
 
         Message message = Message.builder()
                 .message("성공")

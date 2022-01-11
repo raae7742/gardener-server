@@ -1,11 +1,7 @@
 package jandi.server.service;
 
-import jandi.server.model.Event;
-import jandi.server.model.EventRequestDto;
-import jandi.server.model.EventResponseDto;
-import jandi.server.model.User;
+import jandi.server.model.*;
 import jandi.server.repository.EventRepository;
-import jandi.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,12 +14,12 @@ import java.util.List;
 public class EventService {
 
     private final EventRepository eventRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     public Long create(EventRequestDto requestDto) {
         Event event = eventRepository.save(new Event(requestDto));
         for (int i = 0; i<requestDto.getUsers().size(); i++) {
-            User user = userRepository.save(new User(requestDto.getUsers().get(i), event));
+            userService.create(requestDto.getUsers().get(i), event);
         }
         return event.getId();
     }
@@ -58,6 +54,7 @@ public class EventService {
 
     public Long delete(Long id) {
         Event event = findOne(id);
+        userService.delete(event);
         eventRepository.delete(event);
 
         return event.getId();

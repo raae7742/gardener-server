@@ -6,6 +6,7 @@ import jandi.server.model.EventResponseDto;
 import jandi.server.model.UserRequestDto;
 import jandi.server.repository.EventRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -74,6 +75,23 @@ public class EventServiceTest {
         for (EventResponseDto eventDto : eventDtos) {
             assertThat(eventDto.getEnded_at()).isBefore(LocalDate.now());
         }
+    }
+
+    @Test
+    public void delete() {
+        //given
+        List<UserRequestDto> userList = createUserRequestDtos();
+
+        LocalDate started_at = LocalDate.of(2022, 1, 1);
+        LocalDate ended_at = LocalDate.of(2022, 12, 31);
+
+        Long id = eventService.create(createEventRequestDto("제목1", "내용1", started_at, ended_at, userList));
+
+        //when
+        eventService.delete(id);
+
+        //then
+        Assertions.assertThrows(IllegalArgumentException.class, () -> eventService.findOne(id));
     }
 
     private List<UserRequestDto> createUserRequestDtos() {
