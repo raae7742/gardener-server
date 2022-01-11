@@ -1,11 +1,11 @@
-package jandi.server.controller;
+package jandi.server.service;
 
 import jandi.server.model.Event;
 import jandi.server.model.EventRequestDto;
 import jandi.server.model.EventResponseDto;
 import jandi.server.model.UserRequestDto;
 import jandi.server.repository.EventRepository;
-import jandi.server.service.EventService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,9 +23,13 @@ public class EventServiceTest {
     @Autowired
     private EventRepository eventRepository;
 
+    @AfterEach
+    public void afterEach() {
+
+    }
+
     @Test
     public void create() {
-
         //given
         List<UserRequestDto> userList = createUserRequestDtos();
 

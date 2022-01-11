@@ -9,6 +9,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class EventResponseDto {
+    private Long id;
+
     private String name;
 
     private String content;
@@ -22,6 +24,7 @@ public class EventResponseDto {
     private int user_size;
 
     public EventResponseDto(Event event) {
+        this.id = event.getId();
         this.name = event.getName();
         this.content = event.getContent();
         this.started_at = event.getStarted_at();
