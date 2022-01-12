@@ -54,7 +54,6 @@ public class EventService {
 
     public Long delete(Long id) {
         Event event = findOne(id);
-        userService.delete(event);
         eventRepository.delete(event);
 
         return event.getId();

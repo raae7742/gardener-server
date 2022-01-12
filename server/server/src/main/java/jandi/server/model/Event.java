@@ -31,7 +31,7 @@ public class Event extends Timestamped{
     @Column(name = "content", length = 45)
     private String content;
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private List<User> users = new ArrayList<>();
 
     public Event(EventRequestDto requestDto) {

@@ -7,6 +7,7 @@ import jandi.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -20,18 +21,20 @@ public class UserService {
         userRepository.save(new User(requestDto, event));
     }
 
+    @Transactional
     public User findOne(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() ->
+        return userRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("아이디가 존재하지 않습니다.")
         );
-        return user;
     }
 
-    public void delete(Event event) {
-        List<User> users = userRepository.findByEvent(event);
-        for (User user : users) {
-            attendanceService.delete(user);
-            userRepository.delete(user);
-        }
+    @Transactional
+    public List<User> findByEvent(Event event) {
+        return userRepository.findByEvent(event);
+    }
+
+    public void delete(Long id) {
+        User user = findOne(id);
+        userRepository.delete(user);
     }
 }

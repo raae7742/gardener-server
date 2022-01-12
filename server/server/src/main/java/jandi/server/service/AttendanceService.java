@@ -9,6 +9,7 @@ import jandi.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,14 @@ public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
 
+    @Transactional
+    public Long create(User user) {
+        Attendance attendance = new Attendance(user, LocalDate.now());
+        attendanceRepository.save(attendance);
+        return attendance.getId();
+    }
+
+    @Transactional
     public List<AttendOneResponseDto> readOne(User user) {
         List<Attendance> list = attendanceRepository.findByUser(user);
         List<AttendOneResponseDto> response = new ArrayList<>();
@@ -28,6 +37,7 @@ public class AttendanceService {
         return response;
     }
 
+    @Transactional
     public List<AttendTodayResponseDto> readToday() {
         List<Attendance> list = attendanceRepository.findByDate(LocalDate.now());
         List<AttendTodayResponseDto> response = new ArrayList<>();
@@ -37,11 +47,11 @@ public class AttendanceService {
         return response;
     }
 
-    public void delete(User user) {
-        List<Attendance> list = attendanceRepository.findByUser(user);
-
-        for (Attendance attendance: list) {
-            attendanceRepository.delete(attendance);
-        }
+    @Transactional
+    public void delete(Long id) {
+        Attendance attendance = attendanceRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("ID가 존재하지 않습니다.")
+        );
+        attendanceRepository.delete(attendance);
     }
 }

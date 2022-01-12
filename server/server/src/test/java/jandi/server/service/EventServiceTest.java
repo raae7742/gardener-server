@@ -6,7 +6,6 @@ import jandi.server.model.EventResponseDto;
 import jandi.server.model.UserRequestDto;
 import jandi.server.repository.EventRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -24,9 +24,12 @@ public class EventServiceTest {
     @Autowired
     private EventRepository eventRepository;
 
+    Stack<Long> eventStack = new Stack<>();
+
     @AfterEach
     public void afterEach() {
-
+        while(!eventStack.isEmpty())
+            eventService.delete(eventStack.pop());
     }
 
     @Test
@@ -41,6 +44,7 @@ public class EventServiceTest {
 
         //when
         Long event_id = eventService.create(eventDto);
+        eventStack.add(event_id);
 
         //then
         Event findEvent = eventService.findOne(event_id);
@@ -75,23 +79,6 @@ public class EventServiceTest {
         for (EventResponseDto eventDto : eventDtos) {
             assertThat(eventDto.getEnded_at()).isBefore(LocalDate.now());
         }
-    }
-
-    @Test
-    public void delete() {
-        //given
-        List<UserRequestDto> userList = createUserRequestDtos();
-
-        LocalDate started_at = LocalDate.of(2022, 1, 1);
-        LocalDate ended_at = LocalDate.of(2022, 12, 31);
-
-        Long id = eventService.create(createEventRequestDto("제목1", "내용1", started_at, ended_at, userList));
-
-        //when
-        eventService.delete(id);
-
-        //then
-        Assertions.assertThrows(IllegalArgumentException.class, () -> eventService.findOne(id));
     }
 
     private List<UserRequestDto> createUserRequestDtos() {
@@ -130,8 +117,8 @@ public class EventServiceTest {
         LocalDate ended_at2 = LocalDate.of(2022, 1, 2);
         EventRequestDto eventDto2 = createEventRequestDto("제목2", "내용2", started_at2, ended_at2, userList);
 
-        eventService.create(eventDto1);
-        eventService.create(eventDto2);
+        eventStack.add(eventService.create(eventDto1));
+        eventStack.add(eventService.create(eventDto2));
     }
 
 }

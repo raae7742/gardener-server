@@ -27,7 +27,7 @@ public class User extends Timestamped {
     @Column(name = "github", length = 20)
     private String github;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Attendance> attendances = new ArrayList<>();
 
     public void setEvent(Event event) {

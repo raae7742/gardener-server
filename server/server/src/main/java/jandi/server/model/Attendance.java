@@ -36,14 +36,15 @@ public class Attendance extends Timestamped {
     @Column(name = "til", length = 1)
     private boolean til;
 
-    public void setUser(User user) {
+    public Attendance(User user, LocalDate date) {
+        this.date = date;
+        this.is_checked = false;
+        this.commit = false;
+        this.til = false;
         this.user = user;
-        user.getAttendances().add(this);
     }
 
-    public void setIs_checkedOn() {
-        this.is_checked = true;
-    }
+    public void setIs_checkedOn() { this.is_checked = true; }
 
     public void setCommitOn() {
         this.commit = true;
