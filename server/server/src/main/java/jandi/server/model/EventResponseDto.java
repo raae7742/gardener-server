@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,7 +23,7 @@ public class EventResponseDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Aisa/Seoul")
     private LocalDate ended_at;
 
-    private int user_size;
+    private List<UserResponseDto> users = new ArrayList<>();
 
     public EventResponseDto(Event event) {
         this.id = event.getId();
@@ -29,6 +31,10 @@ public class EventResponseDto {
         this.content = event.getContent();
         this.started_at = event.getStarted_at();
         this.ended_at = event.getEnded_at();
-        this.user_size = event.getUsers().size();
+        for (User user : event.getUsers())
+            users.add(new UserResponseDto(user));
     }
 }
+
+
+

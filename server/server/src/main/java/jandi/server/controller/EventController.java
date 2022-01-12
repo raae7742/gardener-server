@@ -49,17 +49,6 @@ public class EventController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-    @GetMapping("/events/detail")
-    public ResponseEntity<Message> readDetail(@RequestParam Long id) {
-        Message message = Message.builder()
-                .message("성공")
-                .status(StatusEnum.OK)
-                .data(eventService.findOne(id))
-                .build();
-
-        return new ResponseEntity<>(message, HttpStatus.OK);
-    }
-
     @DeleteMapping("/events")
     public ResponseEntity<Message> delete(@RequestParam Long id) {
         Message message = Message.builder()
