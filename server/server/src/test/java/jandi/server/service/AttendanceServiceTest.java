@@ -55,6 +55,19 @@ public class AttendanceServiceTest {
         assertThat(list.size()).isEqualTo(2);
     }
 
+
+    @Test
+    public void updateCommit() {
+        //given
+        List<UserRequestDto> userList = createUserRequestDtos();
+        List<User> users = createUsersandAttendance(userList);
+
+        //when
+
+        //then
+
+    }
+
     private List<UserRequestDto> createUserRequestDtos() {
         List<UserRequestDto> userList = new ArrayList<>();
 

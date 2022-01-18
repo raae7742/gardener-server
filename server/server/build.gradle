@@ -19,6 +19,7 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.kohsuke:github-api:1.301'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
