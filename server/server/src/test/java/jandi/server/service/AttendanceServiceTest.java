@@ -64,13 +64,7 @@ public class AttendanceServiceTest {
     public void updateCommit() {
         //given
         List<UserRequestDto> userList = createUserRequestDtos();
-
-        LocalDate started_at = LocalDate.of(2022, 1, 10);
-        LocalDate ended_at = LocalDate.of(2022, 1, 20);
-
-        EventRequestDto eventDto = createEventRequestDto("제목1", "내용1", started_at, ended_at, userList);
-        event_id = eventService.create(eventDto);
-        Event event = eventService.findOne(event_id);
+        Event event = createEvent(userList);
 
         //when
         attendanceService.updateAttendances(event);
@@ -87,17 +81,12 @@ public class AttendanceServiceTest {
         userDto1.setGithub("aeae1");
         userList.add(userDto1);
 
-        UserRequestDto userDto2 = new UserRequestDto();
-        userDto1.setName("남수연");
-        userDto1.setGithub("mori8");
-        userList.add(userDto2);
-
         return userList;
     }
 
     private Event createEvent(List<UserRequestDto> userList) {
-        LocalDate started_at = LocalDate.of(2022, 1, 10);
-        LocalDate ended_at = LocalDate.of(2022, 1, 20);
+        LocalDate started_at = LocalDate.now().minusDays(3);
+        LocalDate ended_at = LocalDate.now().plusDays(3);
 
         EventRequestDto eventDto = createEventRequestDto("제목1", "내용1", started_at, ended_at, userList);
         event_id = eventService.create(eventDto);

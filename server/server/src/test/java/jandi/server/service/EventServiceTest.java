@@ -38,7 +38,7 @@ public class EventServiceTest {
         List<UserRequestDto> userList = createUserRequestDtos();
 
         LocalDate started_at = LocalDate.of(2022, 1, 1);
-        LocalDate ended_at = LocalDate.of(2022, 12, 31);
+        LocalDate ended_at = LocalDate.of(2022, 1, 2);
 
         EventRequestDto eventDto = createEventRequestDto("제목1", "내용1", started_at, ended_at, userList);
 
@@ -63,7 +63,7 @@ public class EventServiceTest {
 
         //then
         for (EventResponseDto eventDto : eventDtos) {
-            assertThat(eventDto.getEnded_at()).isAfter(LocalDate.now());
+            assertThat(eventDto.getEnded_at()).isAfterOrEqualTo(LocalDate.now());
         }
     }
 
@@ -86,13 +86,8 @@ public class EventServiceTest {
         userDto1.setName("장현애1");
         userDto1.setGithub("aeae1");
 
-        UserRequestDto userDto2 = new UserRequestDto();
-        userDto1.setName("장현애2");
-        userDto1.setGithub("aeae2");
-
         List<UserRequestDto> userList = new ArrayList<>();
         userList.add(userDto1);
-        userList.add(userDto2);
         return userList;
     }
 
@@ -109,12 +104,12 @@ public class EventServiceTest {
     private void createPastAndCurrentEventRequestDto() {
         List<UserRequestDto> userList = createUserRequestDtos();
 
-        LocalDate started_at1 = LocalDate.of(2022, 1, 1);
-        LocalDate ended_at1 = LocalDate.of(2022, 12, 31);
+        LocalDate started_at1 = LocalDate.now().minusDays(2);
+        LocalDate ended_at1 = LocalDate.now().plusDays(2);
         EventRequestDto eventDto1 = createEventRequestDto("제목1", "내용1", started_at1, ended_at1, userList);
 
-        LocalDate started_at2 = LocalDate.of(2022, 1, 1);
-        LocalDate ended_at2 = LocalDate.of(2022, 1, 2);
+        LocalDate started_at2 = LocalDate.now().minusDays(3);
+        LocalDate ended_at2 = LocalDate.now().minusDays(1);
         EventRequestDto eventDto2 = createEventRequestDto("제목2", "내용2", started_at2, ended_at2, userList);
 
         eventStack.add(eventService.create(eventDto1));

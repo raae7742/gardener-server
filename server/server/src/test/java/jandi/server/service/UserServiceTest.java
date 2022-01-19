@@ -34,7 +34,7 @@ public class UserServiceTest {
         //given
         List<UserRequestDto> userList = createUserRequestDtos();
         LocalDate started_at = LocalDate.of(2022, 1, 1);
-        LocalDate ended_at = LocalDate.of(2022, 12, 31);
+        LocalDate ended_at = LocalDate.of(2022, 1, 2);
 
         EventRequestDto eventDto = createEventRequestDto("제목1", "내용1", started_at, ended_at, userList);
         event_id = eventService.create(eventDto);
