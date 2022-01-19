@@ -38,10 +38,10 @@ public class Attendance extends Timestamped {
 
     public Attendance(User user, LocalDate date) {
         this.date = date;
+        this.user = user;
         this.is_checked = false;
         this.commit = false;
         this.til = false;
-        this.user = user;
     }
 
     public void setCommitOn() {

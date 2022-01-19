@@ -1,6 +1,7 @@
 package jandi.server.controller;
 
 import jandi.server.model.*;
+import jandi.server.service.AttendanceService;
 import jandi.server.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,10 +15,13 @@ import org.springframework.web.bind.annotation.*;
 public class EventController {
 
     private final EventService eventService;
+    private final AttendanceService attendanceService;
 
     @PostMapping("/events")
     public ResponseEntity<Message> create(@RequestBody EventRequestDto requestDto) {
         Long id = eventService.create(requestDto);
+        attendanceService.updateAttendances(eventService.findOne(id));
+
         Message message = Message.builder()
                 .message("성공")
                 .status(StatusEnum.OK)

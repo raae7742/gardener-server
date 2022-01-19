@@ -11,7 +11,6 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,6 +43,7 @@ public class AttendanceService {
     @Transactional
     private void updateCommit(User user, LocalDate started_at, LocalDate ended_at) {
         PagedIterator<GHCommit> iterator = githubApi.getCommits(user.getGithub());
+        List<Attendance> attendances = attendanceRepository.findByUser(user);
 
         try {
             while (iterator.hasNext()) {
@@ -54,9 +54,18 @@ public class AttendanceService {
 
                 if (date.isBefore(started_at)) break;
                 if (date.isBefore(ended_at)) {
-                    Attendance attendance = attendanceRepository.findByUserAndDate(user.getId(), date)
-                            .orElseGet(()->create(user, date));
-                    attendance.setCommitOn();
+                    Attendance attendance = null;
+                    for (Attendance a : attendances)
+                        if (a.getDate().isEqual(date)) {
+                            attendance = a;
+                            if (!attendance.isCommit()) attendance.setCommitOn();
+                        }
+
+                    if (attendance == null) {
+                        attendance = create(user, date);
+                        attendance.setCommitOn();
+                        attendances = attendanceRepository.findByUser(user);
+                    }
                 }
             }
         } catch (IOException ignored) {
