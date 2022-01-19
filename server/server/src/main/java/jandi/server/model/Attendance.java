@@ -21,7 +21,7 @@ public class Attendance extends Timestamped {
     @JoinColumn(name="user_id")
     private User user;
 
-    @Column(name = "date")
+    @Column(name = "date", unique = true)
     private LocalDate date;
 
     @Convert(converter = BooleanToYNConverter.class)
@@ -44,13 +44,13 @@ public class Attendance extends Timestamped {
         this.user = user;
     }
 
-    public void setIs_checkedOn() { this.is_checked = true; }
-
     public void setCommitOn() {
         this.commit = true;
+        this.is_checked = true;
     }
 
     public void setTilOn() {
         this.til = true;
+        if (this.commit) this.is_checked = true;
     }
 }

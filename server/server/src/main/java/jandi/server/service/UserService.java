@@ -15,7 +15,6 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final AttendanceService attendanceService;
 
     public void create(UserRequestDto requestDto, Event event) {
         userRepository.save(new User(requestDto, event));

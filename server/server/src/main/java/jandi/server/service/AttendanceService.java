@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -23,31 +23,45 @@ public class AttendanceService {
     private final GithubApi githubApi = new GithubApi();
 
     @Transactional
-    public Long create(User user) {
-        Attendance attendance = new Attendance(user, LocalDate.now());
+    public Attendance create(User user, LocalDate date) {
+        Attendance attendance = new Attendance(user, date);
         attendanceRepository.save(attendance);
-        return attendance.getId();
+        return attendance;
     }
 
-    public void readCommitHistory(User user) throws IOException {
-        Event event = user.getEvent();
-        Date started_at = Date.from(event.getStarted_at().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date ended_at = Date.from(event.getEnded_at().atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-        PagedIterator<GHCommit> iterator = githubApi.getCommits("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", user.getGithub());
-        List<Attendance> list = attendanceRepository.findByUser(user);
-
-        while (iterator.hasNext()) {
-            GHCommit commit = iterator.next();
-            Date date = commit.getCommitDate();
-
-            if (commit.getCommitDate().before(started_at)) break;
-            else if (commit.getCommitDate().before(ended_at)) {
-                // attendance 갱신
-
-            }
+    @Transactional
+    public void updateAttendances(Event event) {
+        LocalDate started_at = event.getStarted_at();
+        LocalDate ended_at = event.getEnded_at();
+        for (User user : event.getUsers()) {
+            List<Attendance> attendances = attendanceRepository.findByUser(user);
+            updateCommit(user, started_at, ended_at);
+            //updateTIL(user);
         }
 
+    }
+
+    @Transactional
+    private void updateCommit(User user, LocalDate started_at, LocalDate ended_at) {
+        PagedIterator<GHCommit> iterator = githubApi.getCommits(user.getGithub());
+
+        try {
+            while (iterator.hasNext()) {
+                GHCommit commit = iterator.next();
+                LocalDate date = commit.getCommitDate().toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
+
+                if (date.isBefore(started_at)) break;
+                if (date.isBefore(ended_at)) {
+                    Attendance attendance = attendanceRepository.findByUserAndDate(user.getId(), date)
+                            .orElseGet(()->create(user, date));
+                    attendance.setCommitOn();
+                }
+            }
+        } catch (IOException ignored) {
+            ignored.printStackTrace();
+        }
     }
 
     public void updateTIL(User user) {
@@ -55,23 +69,24 @@ public class AttendanceService {
     }
 
     @Transactional
-    public List<AttendOneResponseDto> readOne(User user) {
+    public AttendUserResponseDto readAll(User user) {
+        AttendUserResponseDto response = new AttendUserResponseDto(user);
+
         List<Attendance> list = attendanceRepository.findByUser(user);
-        List<AttendOneResponseDto> response = new ArrayList<>();
         for (Attendance a : list) {
-            response.add(new AttendOneResponseDto(a));
+            response.getAttendance().add(new AttendOneResponseDto(a));
         }
+
+        Collections.sort(response.getAttendance());
         return response;
     }
 
     @Transactional
-    public List<AttendTodayResponseDto> readToday() {
-        List<Attendance> list = attendanceRepository.findByDate(LocalDate.now());
-        List<AttendTodayResponseDto> response = new ArrayList<>();
-        for (Attendance a : list) {
-            response.add(new AttendTodayResponseDto(a));
-        }
-        return response;
+    public AttendTodayResponseDto readToday(User user) {
+        Attendance attendance = attendanceRepository.findByUserAndDate(user.getId(), LocalDate.now())
+                .orElseGet(()->create(user, LocalDate.now()));
+
+        return new AttendTodayResponseDto(attendance);
     }
 
     @Transactional

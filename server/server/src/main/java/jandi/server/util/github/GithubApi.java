@@ -6,8 +6,9 @@ import java.io.IOException;
 
 public class GithubApi {
     GitHub github;
+    String token = "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";
 
-    public PagedIterator<GHCommit> getCommits(String token, String userId) {
+    public PagedIterator<GHCommit> getCommits(String userId) {
         try { connectToGithub(token); }
         catch (IOException e) {
             throw new IllegalArgumentException("failed to connect gitHub");
@@ -16,7 +17,7 @@ public class GithubApi {
         GHCommitSearchBuilder builder = github.searchCommits()
                 .author(userId)
                 .sort(GHCommitSearchBuilder.Sort.AUTHOR_DATE);
-        PagedSearchIterable<GHCommit> commits = builder.list().withPageSize(1);
+        PagedSearchIterable<GHCommit> commits = builder.list().withPageSize(7);
         return commits._iterator(1);
     }
 

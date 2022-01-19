@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +36,10 @@ public class AttendanceServiceTest {
         List<User> users = createUsersandAttendance(userList);
 
         //when
-        List<AttendOneResponseDto> list = attendanceService.readOne(users.get(0));
+        AttendUserResponseDto attend = attendanceService.readAll(users.get(0));
 
         //then
-        assertThat(list.size()).isEqualTo(1);
-        assertThat(list.get(0).getDate()).isEqualTo(LocalDate.now());
+        assertThat(attend.getAttendance().size()).isEqualTo(1);
     }
 
     @Test
@@ -49,20 +49,28 @@ public class AttendanceServiceTest {
         List<User> users = createUsersandAttendance(userList);
 
         //when
-        List<AttendTodayResponseDto> list = attendanceService.readToday();
+        AttendTodayResponseDto dto = attendanceService.readToday(users.get(0));
 
         //then
-        assertThat(list.size()).isEqualTo(2);
+        assertThat(dto.getUsername()).isEqualTo(users.get(0).getName());
     }
 
 
     @Test
+    @Transactional
     public void updateCommit() {
         //given
         List<UserRequestDto> userList = createUserRequestDtos();
-        List<User> users = createUsersandAttendance(userList);
+
+        LocalDate started_at = LocalDate.of(2022, 1, 10);
+        LocalDate ended_at = LocalDate.of(2022, 1, 20);
+
+        EventRequestDto eventDto = createEventRequestDto("제목1", "내용1", started_at, ended_at, userList);
+        event_id = eventService.create(eventDto);
+        Event event = eventService.findOne(event_id);
 
         //when
+        attendanceService.updateAttendances(event);
 
         //then
 
@@ -72,29 +80,29 @@ public class AttendanceServiceTest {
         List<UserRequestDto> userList = new ArrayList<>();
 
         UserRequestDto userDto1 = new UserRequestDto();
-        userDto1.setName("장현애1");
+        userDto1.setName("장현애");
         userDto1.setGithub("aeae1");
         userList.add(userDto1);
 
         UserRequestDto userDto2 = new UserRequestDto();
-        userDto1.setName("장현애2");
-        userDto1.setGithub("aeae2");
+        userDto1.setName("남수연");
+        userDto1.setGithub("mori8");
         userList.add(userDto2);
 
         return userList;
     }
 
     private List<User> createUsersandAttendance(List<UserRequestDto> userList) {
-        LocalDate started_at = LocalDate.of(2022, 1, 1);
-        LocalDate ended_at = LocalDate.of(2022, 12, 31);
+        LocalDate started_at = LocalDate.of(2022, 1, 10);
+        LocalDate ended_at = LocalDate.of(2022, 1, 20);
 
         EventRequestDto eventDto = createEventRequestDto("제목1", "내용1", started_at, ended_at, userList);
         event_id = eventService.create(eventDto);
         Event event = eventService.findOne(event_id);
 
         List<User> users = userService.findByEvent(event);
-        attendanceService.create(users.get(0));
-        attendanceService.create(users.get(1));
+        attendanceService.create(users.get(0), LocalDate.now());
+        attendanceService.create(users.get(1), LocalDate.now());
         return users;
     }
 

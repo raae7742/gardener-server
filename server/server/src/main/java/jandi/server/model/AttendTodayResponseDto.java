@@ -6,11 +6,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AttendTodayResponseDto {
-    private Long user_id;
+    private String profileImage;
+    private String username;
     private boolean is_checked;
 
     public AttendTodayResponseDto(Attendance attendance) {
-        this.user_id = attendance.getUser().getId();
+        this.username = attendance.getUser().getName();
         this.is_checked = attendance.is_checked();
     }
 }
