@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,20 +34,22 @@ public class AttendanceServiceTest {
     public void readOne() {
         //given
         List<UserRequestDto> userList = createUserRequestDtos();
-        List<User> users = createUsersandAttendance(userList);
+        Event event = createEvent(userList);
+        List<User> users = userService.findByEvent(event);
 
         //when
         AttendUserResponseDto attend = attendanceService.readAll(users.get(0));
 
         //then
-        assertThat(attend.getAttendance().size()).isEqualTo(1);
+        assertThat(attend.getAttendance().size()).isEqualTo(Period.between(event.getStarted_at(), LocalDate.now()).getDays());
     }
 
     @Test
     public void readToday() {
         //given
         List<UserRequestDto> userList = createUserRequestDtos();
-        List<User> users = createUsersandAttendance(userList);
+        Event event = createEvent(userList);
+        List<User> users = userService.findByEvent(event);
 
         //when
         AttendTodayResponseDto dto = attendanceService.readToday(users.get(0));
@@ -92,18 +95,13 @@ public class AttendanceServiceTest {
         return userList;
     }
 
-    private List<User> createUsersandAttendance(List<UserRequestDto> userList) {
+    private Event createEvent(List<UserRequestDto> userList) {
         LocalDate started_at = LocalDate.of(2022, 1, 10);
         LocalDate ended_at = LocalDate.of(2022, 1, 20);
 
         EventRequestDto eventDto = createEventRequestDto("제목1", "내용1", started_at, ended_at, userList);
         event_id = eventService.create(eventDto);
-        Event event = eventService.findOne(event_id);
-
-        List<User> users = userService.findByEvent(event);
-        attendanceService.create(users.get(0), LocalDate.now());
-        attendanceService.create(users.get(1), LocalDate.now());
-        return users;
+        return eventService.findOne(event_id);
     }
 
     private EventRequestDto createEventRequestDto(String name, String content, LocalDate start, LocalDate end, List<UserRequestDto> users) {

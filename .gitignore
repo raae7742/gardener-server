@@ -6,3 +6,4 @@ server/server/src/main/resources/application.properties
 server/server/src/main/resources/application.properties
 *.properties
 server/server/src/test/java/jandi/server/db/MySQLConnectionTest.java
+server/server/src/main/java/jandi/server/util/github/GithubApi.java
