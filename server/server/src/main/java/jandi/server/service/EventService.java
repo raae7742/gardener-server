@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +16,14 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final UserService userService;
+    private final AttendanceService attendanceService;
 
     public Long create(EventRequestDto requestDto) {
         Event event = eventRepository.save(new Event(requestDto));
         for (int i = 0; i<requestDto.getUsers().size(); i++) {
-            userService.create(requestDto.getUsers().get(i), event);
+            User user = userService.create(requestDto.getUsers().get(i), event);
+            for (LocalDate date = event.getStarted_at(); date.isBefore(LocalDate.now()); date = date.plusDays(1))
+                attendanceService.create(user, date);
         }
         return event.getId();
     }

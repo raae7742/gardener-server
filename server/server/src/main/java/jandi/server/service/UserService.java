@@ -16,8 +16,8 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public void create(UserRequestDto requestDto, Event event) {
-        userRepository.save(new User(requestDto, event));
+    public User create(UserRequestDto requestDto, Event event) {
+        return userRepository.save(new User(requestDto, event));
     }
 
     @Transactional

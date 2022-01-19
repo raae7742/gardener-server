@@ -20,7 +20,6 @@ public class EventController {
     @PostMapping("/events")
     public ResponseEntity<Message> create(@RequestBody EventRequestDto requestDto) {
         Long id = eventService.create(requestDto);
-        attendanceService.updateAttendances(eventService.findOne(id));
 
         Message message = Message.builder()
                 .message("성공")

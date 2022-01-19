@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Attendance extends Timestamped {
+public class Attendance extends Timestamped implements Comparable<Attendance>{
 
     @Id
     @Column(name = "attendance_id", length = 20)
@@ -52,5 +52,10 @@ public class Attendance extends Timestamped {
     public void setTilOn() {
         this.til = true;
         if (this.commit) this.is_checked = true;
+    }
+
+    @Override
+    public int compareTo(Attendance o) {
+        return this.date.compareTo(o.date);
     }
 }
