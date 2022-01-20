@@ -56,6 +56,17 @@ public class EventService {
         return eventDtos;
     }
 
+    @Transactional
+    public List<EventResponseDto> findFutureEvents() {
+        List<Event> futureEvents = eventRepository.findFutureEvents();
+
+        List<EventResponseDto> eventDtos = new ArrayList<>();
+        for (int i=0; i<futureEvents.size(); i++) {
+            eventDtos.add(new EventResponseDto(futureEvents.get(i)));
+        }
+        return eventDtos;
+    }
+
     public Long delete(Long id) {
         Event event = findOne(id);
         eventRepository.delete(event);
