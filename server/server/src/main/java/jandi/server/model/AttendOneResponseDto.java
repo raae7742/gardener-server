@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 
 @Getter @Setter
 public class AttendOneResponseDto implements Comparable<AttendOneResponseDto> {
