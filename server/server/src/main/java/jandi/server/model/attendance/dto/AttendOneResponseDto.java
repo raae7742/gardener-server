@@ -1,5 +1,6 @@
-package jandi.server.model;
+package jandi.server.model.attendance.dto;
 
+import jandi.server.model.attendance.Attendance;
 import lombok.Getter;
 import lombok.Setter;
 

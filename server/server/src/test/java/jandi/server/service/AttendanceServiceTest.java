@@ -1,6 +1,11 @@
 package jandi.server.service;
 
-import jandi.server.model.*;
+import jandi.server.model.attendance.dto.AttendTodayResponseDto;
+import jandi.server.model.attendance.dto.AttendMemberResponseDto;
+import jandi.server.model.event.Event;
+import jandi.server.model.event.dto.EventRequestDto;
+import jandi.server.model.member.Member;
+import jandi.server.model.member.dto.MemberRequestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +26,7 @@ public class AttendanceServiceTest {
     @Autowired
     private EventService eventService;
     @Autowired
-    private UserService userService;
+    private MemberService memberService;
 
     Long event_id;
 
@@ -33,12 +38,12 @@ public class AttendanceServiceTest {
     @Test
     public void readOne() {
         //given
-        List<UserRequestDto> userList = createUserRequestDtos();
+        List<MemberRequestDto> userList = createUserRequestDtos();
         Event event = createEvent(userList);
-        List<User> users = userService.findByEvent(event);
+        List<Member> members = memberService.findByEvent(event);
 
         //when
-        AttendUserResponseDto attend = attendanceService.readAll(users.get(0));
+        AttendMemberResponseDto attend = attendanceService.readAll(members.get(0));
 
         //then
         assertThat(attend.getAttendance().size()).isEqualTo(Period.between(event.getStarted_at(), LocalDate.now()).getDays());
@@ -47,15 +52,15 @@ public class AttendanceServiceTest {
     @Test
     public void readToday() {
         //given
-        List<UserRequestDto> userList = createUserRequestDtos();
+        List<MemberRequestDto> userList = createUserRequestDtos();
         Event event = createEvent(userList);
-        List<User> users = userService.findByEvent(event);
+        List<Member> members = memberService.findByEvent(event);
 
         //when
-        AttendTodayResponseDto dto = attendanceService.readToday(users.get(0));
+        AttendTodayResponseDto dto = attendanceService.readToday(members.get(0));
 
         //then
-        assertThat(dto.getUsername()).isEqualTo(users.get(0).getName());
+        assertThat(dto.getUsername()).isEqualTo(members.get(0).getName());
     }
 
 
@@ -63,7 +68,7 @@ public class AttendanceServiceTest {
     @Transactional
     public void updateCommit() {
         //given
-        List<UserRequestDto> userList = createUserRequestDtos();
+        List<MemberRequestDto> userList = createUserRequestDtos();
         Event event = createEvent(userList);
 
         //when
@@ -73,10 +78,10 @@ public class AttendanceServiceTest {
 
     }
 
-    private List<UserRequestDto> createUserRequestDtos() {
-        List<UserRequestDto> userList = new ArrayList<>();
+    private List<MemberRequestDto> createUserRequestDtos() {
+        List<MemberRequestDto> userList = new ArrayList<>();
 
-        UserRequestDto userDto1 = new UserRequestDto();
+        MemberRequestDto userDto1 = new MemberRequestDto();
         userDto1.setName("장현애");
         userDto1.setGithub("aeae1");
         userList.add(userDto1);
@@ -84,7 +89,7 @@ public class AttendanceServiceTest {
         return userList;
     }
 
-    private Event createEvent(List<UserRequestDto> userList) {
+    private Event createEvent(List<MemberRequestDto> userList) {
         LocalDate started_at = LocalDate.now().minusDays(3);
         LocalDate ended_at = LocalDate.now().plusDays(3);
 
@@ -93,7 +98,7 @@ public class AttendanceServiceTest {
         return eventService.findOne(event_id);
     }
 
-    private EventRequestDto createEventRequestDto(String name, String content, LocalDate start, LocalDate end, List<UserRequestDto> users) {
+    private EventRequestDto createEventRequestDto(String name, String content, LocalDate start, LocalDate end, List<MemberRequestDto> users) {
         EventRequestDto eventDto = new EventRequestDto();
         eventDto.setName(name);
         eventDto.setContent(content);

@@ -1,9 +1,9 @@
 package jandi.server.service;
 
-import jandi.server.model.Event;
-import jandi.server.model.EventRequestDto;
-import jandi.server.model.EventResponseDto;
-import jandi.server.model.UserRequestDto;
+import jandi.server.model.event.Event;
+import jandi.server.model.event.dto.EventRequestDto;
+import jandi.server.model.event.dto.EventResponseDto;
+import jandi.server.model.member.dto.MemberRequestDto;
 import jandi.server.repository.EventRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ public class EventServiceTest {
     @Test
     public void create() {
         //given
-        List<UserRequestDto> userList = createUserRequestDtos();
+        List<MemberRequestDto> userList = createUserRequestDtos();
 
         LocalDate started_at = LocalDate.of(2022, 1, 1);
         LocalDate ended_at = LocalDate.of(2022, 1, 2);
@@ -81,17 +81,17 @@ public class EventServiceTest {
         }
     }
 
-    private List<UserRequestDto> createUserRequestDtos() {
-        UserRequestDto userDto1 = new UserRequestDto();
+    private List<MemberRequestDto> createUserRequestDtos() {
+        MemberRequestDto userDto1 = new MemberRequestDto();
         userDto1.setName("장현애1");
         userDto1.setGithub("aeae1");
 
-        List<UserRequestDto> userList = new ArrayList<>();
+        List<MemberRequestDto> userList = new ArrayList<>();
         userList.add(userDto1);
         return userList;
     }
 
-    private EventRequestDto createEventRequestDto(String name, String content, LocalDate start, LocalDate end, List<UserRequestDto> users) {
+    private EventRequestDto createEventRequestDto(String name, String content, LocalDate start, LocalDate end, List<MemberRequestDto> users) {
         EventRequestDto eventDto = new EventRequestDto();
         eventDto.setName(name);
         eventDto.setContent(content);
@@ -102,7 +102,7 @@ public class EventServiceTest {
     }
 
     private void createPastAndCurrentEventRequestDto() {
-        List<UserRequestDto> userList = createUserRequestDtos();
+        List<MemberRequestDto> userList = createUserRequestDtos();
 
         LocalDate started_at1 = LocalDate.now().minusDays(2);
         LocalDate ended_at1 = LocalDate.now().plusDays(2);

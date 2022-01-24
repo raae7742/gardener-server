@@ -1,5 +1,7 @@
-package jandi.server.model;
+package jandi.server.model.attendance;
 
+import jandi.server.model.Timestamped;
+import jandi.server.model.member.Member;
 import jandi.server.util.BooleanToYNConverter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +20,8 @@ public class Attendance extends Timestamped implements Comparable<Attendance>{
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
-    private User user;
+    @JoinColumn(name="member_id")
+    private Member member;
 
     @Column(name = "date", unique = true)
     private LocalDate date;
@@ -36,9 +38,9 @@ public class Attendance extends Timestamped implements Comparable<Attendance>{
     @Column(name = "til", length = 1)
     private boolean til;
 
-    public Attendance(User user, LocalDate date) {
+    public Attendance(Member member, LocalDate date) {
         this.date = date;
-        this.user = user;
+        this.member = member;
         this.is_checked = false;
         this.commit = false;
         this.til = false;

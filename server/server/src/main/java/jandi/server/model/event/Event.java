@@ -1,5 +1,8 @@
-package jandi.server.model;
+package jandi.server.model.event;
 
+import jandi.server.model.Timestamped;
+import jandi.server.model.event.dto.EventRequestDto;
+import jandi.server.model.member.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Event extends Timestamped{
+public class Event extends Timestamped {
 
     @Id
     @Column(name = "event_id", length = 20)
@@ -32,7 +35,7 @@ public class Event extends Timestamped{
     private String content;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<User> users = new ArrayList<>();
+    private List<Member> members = new ArrayList<>();
 
     public Event(EventRequestDto requestDto) {
         this.name = requestDto.getName();

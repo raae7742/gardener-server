@@ -1,9 +1,13 @@
 package jandi.server.controller;
 
 import jandi.server.model.*;
+import jandi.server.model.attendance.dto.AttendTodayResponseDto;
+import jandi.server.model.attendance.dto.AttendMemberResponseDto;
+import jandi.server.model.event.Event;
+import jandi.server.model.member.Member;
 import jandi.server.service.AttendanceService;
 import jandi.server.service.EventService;
-import jandi.server.service.UserService;
+import jandi.server.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,18 +26,18 @@ public class AttendanceController {
 
     private final AttendanceService attendanceService;
     private final EventService eventService;
-    private final UserService userService;
+    private final MemberService memberService;
 
     @GetMapping("/checks")
     public ResponseEntity<Message> readAllCheck(@RequestParam Long event_id) {
         Event event = eventService.findOne(event_id);
         //attendanceService.updateAttendances(event);
 
-        List<User> users = userService.findByEvent(event);
-        List<AttendUserResponseDto> allAttendList = new ArrayList<>();
+        List<Member> members = memberService.findByEvent(event);
+        List<AttendMemberResponseDto> allAttendList = new ArrayList<>();
 
-        for (User user : users) {
-            allAttendList.add(attendanceService.readAll(user));
+        for (Member member : members) {
+            allAttendList.add(attendanceService.readAll(member));
         }
 
         Message message = Message.builder()
@@ -49,11 +53,11 @@ public class AttendanceController {
         Event event = eventService.findOne(event_id);
         attendanceService.updateAttendances(event);         // 커밋 히스토리 업데이트
 
-        List<User> users = userService.findByEvent(event);
+        List<Member> members = memberService.findByEvent(event);
         List<AttendTodayResponseDto> todayAttendList = new ArrayList<>();
 
-        for (User user : users) {
-            todayAttendList.add(attendanceService.readToday(user));
+        for (Member member : members) {
+            todayAttendList.add(attendanceService.readToday(member));
         }
 
         Message message = Message.builder()

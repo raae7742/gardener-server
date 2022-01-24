@@ -1,5 +1,9 @@
-package jandi.server.model;
+package jandi.server.model.member;
 
+import jandi.server.model.Timestamped;
+import jandi.server.model.attendance.Attendance;
+import jandi.server.model.event.Event;
+import jandi.server.model.member.dto.MemberRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,10 +14,10 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class User extends Timestamped {
+public class Member extends Timestamped {
 
     @Id
-    @Column(name = "user_id", length = 20)
+    @Column(name = "member_id", length = 20)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -27,15 +31,15 @@ public class User extends Timestamped {
     @Column(name = "github", length = 20)
     private String github;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Attendance> attendances = new ArrayList<>();
 
     public void setEvent(Event event) {
         this.event = event;
-        event.getUsers().add(this);
+        event.getMembers().add(this);
     }
 
-    public User(UserRequestDto requestDto, Event event) {
+    public Member(MemberRequestDto requestDto, Event event) {
         this.name = requestDto.getName();
         this.github = requestDto.getGithub();
         setEvent(event);

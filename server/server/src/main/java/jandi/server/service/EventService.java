@@ -1,6 +1,9 @@
 package jandi.server.service;
 
-import jandi.server.model.*;
+import jandi.server.model.event.Event;
+import jandi.server.model.event.dto.EventRequestDto;
+import jandi.server.model.event.dto.EventResponseDto;
+import jandi.server.model.member.Member;
 import jandi.server.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,15 +18,15 @@ import java.util.List;
 public class EventService {
 
     private final EventRepository eventRepository;
-    private final UserService userService;
+    private final MemberService memberService;
     private final AttendanceService attendanceService;
 
     public Long create(EventRequestDto requestDto) {
         Event event = eventRepository.save(new Event(requestDto));
-        for (int i = 0; i<requestDto.getUsers().size(); i++) {
-            User user = userService.create(requestDto.getUsers().get(i), event);
+        for (int i = 0; i<requestDto.getMembers().size(); i++) {
+            Member member = memberService.create(requestDto.getMembers().get(i), event);
             for (LocalDate date = event.getStarted_at(); date.isBefore(LocalDate.now()); date = date.plusDays(1))
-                attendanceService.create(user, date);
+                attendanceService.create(member, date);
         }
         return event.getId();
     }

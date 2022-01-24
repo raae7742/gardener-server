@@ -1,5 +1,6 @@
-package jandi.server.model;
+package jandi.server.model.event.dto;
 
+import jandi.server.model.member.dto.MemberRequestDto;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,5 +21,5 @@ public class EventRequestDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate ended_at;
 
-    private List<UserRequestDto> users;
+    private List<MemberRequestDto> members;
 }

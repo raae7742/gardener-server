@@ -1,6 +1,9 @@
-package jandi.server.model;
+package jandi.server.model.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jandi.server.model.event.Event;
+import jandi.server.model.member.Member;
+import jandi.server.model.member.dto.MemberResponseDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +26,7 @@ public class EventResponseDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Aisa/Seoul")
     private LocalDate ended_at;
 
-    private List<UserResponseDto> users = new ArrayList<>();
+    private List<MemberResponseDto> members = new ArrayList<>();
 
     public EventResponseDto(Event event) {
         this.id = event.getId();
@@ -31,8 +34,8 @@ public class EventResponseDto {
         this.content = event.getContent();
         this.started_at = event.getStarted_at();
         this.ended_at = event.getEnded_at();
-        for (User user : event.getUsers())
-            users.add(new UserResponseDto(user));
+        for (Member member : event.getMembers())
+            members.add(new MemberResponseDto(member));
     }
 }
 

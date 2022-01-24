@@ -1,6 +1,7 @@
 package jandi.server.controller;
 
 import jandi.server.model.*;
+import jandi.server.model.event.dto.EventRequestDto;
 import jandi.server.service.AttendanceService;
 import jandi.server.service.EventService;
 import lombok.RequiredArgsConstructor;

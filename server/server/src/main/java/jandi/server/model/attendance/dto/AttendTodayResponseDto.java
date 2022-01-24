@@ -1,5 +1,6 @@
-package jandi.server.model;
+package jandi.server.model.attendance.dto;
 
+import jandi.server.model.attendance.Attendance;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,8 +12,8 @@ public class AttendTodayResponseDto {
     private boolean is_checked;
 
     public AttendTodayResponseDto(Attendance attendance) {
-        this.name = attendance.getUser().getName();
-        this.github = attendance.getUser().getGithub();
+        this.name = attendance.getMember().getName();
+        this.github = attendance.getMember().getGithub();
         this.is_checked = attendance.is_checked();
     }
 }

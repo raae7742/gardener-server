@@ -1,5 +1,6 @@
-package jandi.server.model;
+package jandi.server.model.attendance.dto;
 
+import jandi.server.model.member.Member;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,11 +9,11 @@ import java.util.List;
 
 @Getter
 @Setter
-public class AttendUserResponseDto {
+public class AttendMemberResponseDto {
     private String username;
     private List<AttendOneResponseDto> attendance = new ArrayList<>();
 
-    public AttendUserResponseDto(User user) {
-        this.username = user.getName();
+    public AttendMemberResponseDto(Member member) {
+        this.username = member.getName();
     }
 }

@@ -1,6 +1,11 @@
 package jandi.server.service;
 
-import jandi.server.model.*;
+import jandi.server.model.attendance.dto.AttendOneResponseDto;
+import jandi.server.model.attendance.dto.AttendTodayResponseDto;
+import jandi.server.model.attendance.dto.AttendMemberResponseDto;
+import jandi.server.model.attendance.Attendance;
+import jandi.server.model.event.Event;
+import jandi.server.model.member.Member;
 import jandi.server.repository.AttendanceRepository;
 import jandi.server.util.github.GithubApi;
 import lombok.RequiredArgsConstructor;
@@ -23,39 +28,39 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final GithubApi githubApi = new GithubApi();
 
-    public Attendance create(User user, LocalDate date) {
-        Attendance attendance = new Attendance(user, date);
+    public Attendance create(Member member, LocalDate date) {
+        Attendance attendance = new Attendance(member, date);
         attendanceRepository.save(attendance);
         return attendance;
     }
 
     public void updateAttendances(Event event) {
-        for (User user : event.getUsers()) {
-            updateDate(user);
-            updateCommit(user, event);
-            //updateTIL(user);
+        for (Member member : event.getMembers()) {
+            updateDate(member);
+            updateCommit(member, event);
+            //updateTIL(member);
         }
 
     }
 
-    private void updateDate(User user) {
-        List<Attendance> attendances = attendanceRepository.findByUser(user);
+    private void updateDate(Member member) {
+        List<Attendance> attendances = attendanceRepository.findByMember(member);
         Collections.sort(attendances);
 
         LocalDate finalDate = attendances.get(attendances.size()-1).getDate();
         while (!finalDate.isEqual(LocalDate.now())) {
-            attendances.add(attendances.size(), create(user, finalDate.plusDays(1)));
+            attendances.add(attendances.size(), create(member, finalDate.plusDays(1)));
             finalDate = finalDate.plusDays(1);
         }
     }
 
-    private void updateCommit(User user, Event event) {
+    private void updateCommit(Member member, Event event) {
         LocalDate started_at = event.getStarted_at();
         LocalDate ended_at = event.getEnded_at();
 
-        List<Attendance> attendances = attendanceRepository.findByUser(user);
+        List<Attendance> attendances = attendanceRepository.findByMember(member);
 
-        PagedIterator<GHCommit> iterator = githubApi.getCommits(user.getGithub());
+        PagedIterator<GHCommit> iterator = githubApi.getCommits(member.getGithub());
         try {
             while (iterator.hasNext()) {
                 GHCommit commit = iterator.next();
@@ -74,14 +79,14 @@ public class AttendanceService {
         }
     }
 
-    public void updateTIL(User user) {
+    public void updateTIL(Member member) {
 
     }
 
-    public AttendUserResponseDto readAll(User user) {
-        AttendUserResponseDto response = new AttendUserResponseDto(user);
+    public AttendMemberResponseDto readAll(Member member) {
+        AttendMemberResponseDto response = new AttendMemberResponseDto(member);
 
-        List<Attendance> list = attendanceRepository.findByUser(user);
+        List<Attendance> list = attendanceRepository.findByMember(member);
         for (Attendance a : list) {
             response.getAttendance().add(new AttendOneResponseDto(a));
         }
@@ -90,9 +95,9 @@ public class AttendanceService {
         return response;
     }
 
-    public AttendTodayResponseDto readToday(User user) {
-        Attendance attendance = attendanceRepository.findByUserAndDate(user.getId(), LocalDate.now())
-                .orElseGet(()->create(user, LocalDate.now()));
+    public AttendTodayResponseDto readToday(Member member) {
+        Attendance attendance = attendanceRepository.findByMemberAndDate(member.getId(), LocalDate.now())
+                .orElseGet(()->create(member, LocalDate.now()));
 
         return new AttendTodayResponseDto(attendance);
     }
