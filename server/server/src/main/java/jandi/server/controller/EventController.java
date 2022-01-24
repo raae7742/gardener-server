@@ -4,6 +4,7 @@ import jandi.server.model.*;
 import jandi.server.model.event.dto.EventRequestDto;
 import jandi.server.service.AttendanceService;
 import jandi.server.service.EventService;
+import jandi.server.util.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

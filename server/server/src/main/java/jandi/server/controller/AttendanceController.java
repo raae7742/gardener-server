@@ -8,6 +8,7 @@ import jandi.server.model.member.Member;
 import jandi.server.service.AttendanceService;
 import jandi.server.service.EventService;
 import jandi.server.service.MemberService;
+import jandi.server.util.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

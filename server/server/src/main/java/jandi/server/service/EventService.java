@@ -3,8 +3,10 @@ package jandi.server.service;
 import jandi.server.model.event.Event;
 import jandi.server.model.event.dto.EventRequestDto;
 import jandi.server.model.event.dto.EventResponseDto;
+import jandi.server.model.event.enums.EventExceptionType;
 import jandi.server.model.member.Member;
 import jandi.server.repository.EventRepository;
+import jandi.server.util.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +35,7 @@ public class EventService {
 
     public Event findOne(Long id) {
         return eventRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+                () -> new CustomException(EventExceptionType.NOT_FOUND)
         );
     }
 

@@ -3,7 +3,10 @@ package jandi.server.service;
 import jandi.server.model.event.Event;
 import jandi.server.model.member.Member;
 import jandi.server.model.member.dto.MemberRequestDto;
+import jandi.server.model.member.enums.MemberExceptionType;
 import jandi.server.repository.MemberRepository;
+import jandi.server.util.exception.CustomException;
+import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +26,7 @@ public class MemberService {
     @Transactional
     public Member findOne(Long id) {
         return memberRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("아이디가 존재하지 않습니다.")
+                new CustomException(MemberExceptionType.NOT_FOUND)
         );
     }
 

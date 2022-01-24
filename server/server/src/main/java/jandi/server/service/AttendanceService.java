@@ -4,9 +4,11 @@ import jandi.server.model.attendance.dto.AttendOneResponseDto;
 import jandi.server.model.attendance.dto.AttendTodayResponseDto;
 import jandi.server.model.attendance.dto.AttendMemberResponseDto;
 import jandi.server.model.attendance.Attendance;
+import jandi.server.model.attendance.enums.AttendanceExceptionType;
 import jandi.server.model.event.Event;
 import jandi.server.model.member.Member;
 import jandi.server.repository.AttendanceRepository;
+import jandi.server.util.exception.CustomException;
 import jandi.server.util.github.GithubApi;
 import lombok.RequiredArgsConstructor;
 import org.kohsuke.github.*;
@@ -76,6 +78,7 @@ public class AttendanceService {
             }
         } catch (IOException ignored) {
             ignored.printStackTrace();
+            throw new CustomException(AttendanceExceptionType.COMMIT_ERROR);
         }
     }
 
@@ -104,7 +107,7 @@ public class AttendanceService {
 
     public void delete(Long id) {
         Attendance attendance = attendanceRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("ID가 존재하지 않습니다.")
+                () -> new CustomException(AttendanceExceptionType.NOT_FOUND)
         );
         attendanceRepository.delete(attendance);
     }

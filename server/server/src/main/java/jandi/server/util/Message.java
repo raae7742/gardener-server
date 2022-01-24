@@ -1,5 +1,6 @@
-package jandi.server.model;
+package jandi.server.util;
 
+import jandi.server.model.StatusEnum;
 import lombok.Builder;
 import lombok.Data;
 
