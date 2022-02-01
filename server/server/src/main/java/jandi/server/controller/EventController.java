@@ -2,7 +2,6 @@ package jandi.server.controller;
 
 import jandi.server.model.*;
 import jandi.server.model.event.dto.EventRequestDto;
-import jandi.server.service.AttendanceService;
 import jandi.server.service.EventService;
 import jandi.server.util.Message;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 public class EventController {
 
     private final EventService eventService;
-    private final AttendanceService attendanceService;
 
     @PostMapping("/events")
     public ResponseEntity<Message> create(@RequestBody EventRequestDto requestDto) {
@@ -65,6 +63,17 @@ public class EventController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
+    @PutMapping("/events")
+    public ResponseEntity<Message> update(@RequestParam Long id, @RequestBody EventRequestDto requestDto) {
+        Message message = Message.builder()
+                .message("성공")
+                .status(StatusEnum.OK)
+                .data(eventService.update(id, requestDto))
+                .build();
+
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
     @DeleteMapping("/events")
     public ResponseEntity<Message> delete(@RequestParam Long id) {
         Message message = Message.builder()
@@ -75,4 +84,6 @@ public class EventController {
 
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
+
+
 }

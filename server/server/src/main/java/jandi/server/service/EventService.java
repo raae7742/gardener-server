@@ -72,6 +72,14 @@ public class EventService {
         return eventDtos;
     }
 
+    @Transactional
+    public Event update(Long id, EventRequestDto requestDto) {
+        Event event = findOne(id);
+        event.update(requestDto);
+
+        return event;
+    }
+
     public Long delete(Long id) {
         Event event = findOne(id);
         eventRepository.delete(event);

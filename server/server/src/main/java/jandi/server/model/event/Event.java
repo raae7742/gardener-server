@@ -43,4 +43,11 @@ public class Event extends Timestamped {
         this.started_at = requestDto.getStarted_at();
         this.ended_at = requestDto.getEnded_at();
     }
+
+    public void update(EventRequestDto requestDto) {
+        this.name = requestDto.getName();
+        this.content = requestDto.getContent();
+        this.started_at = requestDto.getStarted_at();
+        this.ended_at = requestDto.getEnded_at();
+    }
 }
