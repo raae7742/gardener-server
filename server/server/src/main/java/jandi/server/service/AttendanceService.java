@@ -38,14 +38,14 @@ public class AttendanceService {
 
     public void updateAttendances(Event event) {
         for (Member member : event.getMembers()) {
-            updateDate(member);
+            createDate(member);
             updateCommit(member, event);
             //updateTIL(member);
         }
 
     }
 
-    private void updateDate(Member member) {
+    private void createDate(Member member) {
         List<Attendance> attendances = attendanceRepository.findByMember(member);
         Collections.sort(attendances);
 
@@ -99,8 +99,21 @@ public class AttendanceService {
     }
 
     public AttendTodayResponseDto readToday(Member member) {
-        Attendance attendance = attendanceRepository.findByMemberAndDate(member.getId(), LocalDate.now())
-                .orElseGet(()->create(member, LocalDate.now()));
+        LocalDate started_at = member.getEvent().getStarted_at();
+        LocalDate ended_at = member.getEvent().getEnded_at();
+        Attendance attendance;
+
+        if (ended_at.isAfter(LocalDate.now())) {
+            attendance = attendanceRepository.findByMemberAndDate(member.getId(), member.getEvent().getEnded_at())
+                    .orElseGet(() -> create(member, LocalDate.now()));
+        }
+        else if (started_at.isBefore(LocalDate.now())) {
+            throw new CustomException(AttendanceExceptionType.NOT_STARTED);
+        }
+        else {
+            attendance = attendanceRepository.findByMemberAndDate(member.getId(), LocalDate.now())
+                    .orElseGet(()->create(member, LocalDate.now()));
+        }
 
         return new AttendTodayResponseDto(attendance);
     }

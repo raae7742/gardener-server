@@ -7,7 +7,8 @@ import lombok.Getter;
 public enum AttendanceExceptionType implements BaseExceptionType {
 
     NOT_FOUND(1001, 401, "해당 ID가 존재하지 않습니다."),
-    COMMIT_ERROR(1001, 500, "커밋을 불러오는 데에 오류가 발생했습니다.");
+    NOT_STARTED(1002, 401, "이벤트가 아직 시작되지 않았습니다."),
+    COMMIT_ERROR(1003, 500, "커밋을 불러오는 데에 오류가 발생했습니다.");
 
     private int errorCode;
     private int httpStatus;
