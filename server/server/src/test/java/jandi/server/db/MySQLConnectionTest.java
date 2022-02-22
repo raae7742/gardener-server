@@ -1,16 +1,19 @@
 package jandi.server.db;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class MySQLConnectionTest {
-
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String URL = "jdbc:mysql://34.122.4.99:3306/gardener?serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false";
-    private static final String USER = "root";
-    private static final String PASSWORD = "GDSCSookmyung";
+    @Value("${spring.datasource.url}")
+    private static String URL;
+    @Value("${spring.datasource.username}")
+    private static String USER;
+    @Value("${spring.datasource.password}")
+    private static String PASSWORD;
 
     @Test
     public void testConnection() throws Exception {
