@@ -1,4 +1,4 @@
-package jandi.server.util;
+package jandi.server.util.response;
 
 import jandi.server.model.StatusEnum;
 import lombok.Builder;

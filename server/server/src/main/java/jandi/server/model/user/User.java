@@ -43,7 +43,7 @@ public class User extends Timestamped implements UserDetails {
 
     public User(UserRequestDto requestDto) {
         this.password = requestDto.getPassword();
-        this.username = requestDto.getName();
+        this.username = requestDto.getUsername();
         this.github = requestDto.getGithub();
     }
 

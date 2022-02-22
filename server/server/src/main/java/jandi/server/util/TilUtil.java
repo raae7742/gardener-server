@@ -1,4 +1,4 @@
-package jandi.server.util.slack;
+package jandi.server.util;
 
 import com.slack.api.Slack;
 import com.slack.api.methods.SlackApiException;
@@ -14,7 +14,7 @@ import java.util.Optional;
 import static java.util.Collections.emptyList;
 
 @PropertySource("classpath:app.properties")
-public class ConversationsHistory {
+public class TilUtil {
 
     static String channelID= "C0300NWDLDB";
 

@@ -1,20 +1,29 @@
-package jandi.server.util.github;
+package jandi.server.util;
 
 import org.kohsuke.github.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-public class GithubApi {
-    GitHub github;
+@Component
+public class CommitUtil {
+
+    private GitHub github;
+
+    private static String token;
 
     @Value("${github.token}")
-    String token;
+    private void setToken(String token) {
+        CommitUtil.token = token;
+    }
 
     public PagedIterator<GHCommit> getCommits(String userId) {
-        try { connectToGithub(token); }
-        catch (IOException e) {
-            throw new IllegalArgumentException("failed to connect gitHub");
+        if (github == null) {
+            try { connectToGithub(token); }
+            catch (IOException e) {
+                throw new IllegalArgumentException("failed to connect gitHub");
+            }
         }
 
         GHCommitSearchBuilder builder = github.searchCommits()

@@ -8,8 +8,8 @@ import jandi.server.model.attendance.enums.AttendanceExceptionType;
 import jandi.server.model.event.Event;
 import jandi.server.model.member.Member;
 import jandi.server.repository.AttendanceRepository;
-import jandi.server.util.exception.CustomException;
-import jandi.server.util.github.GithubApi;
+import jandi.server.util.CommitUtil;
+import jandi.server.util.response.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.kohsuke.github.*;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ import java.util.List;
 public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
-    private final GithubApi githubApi = new GithubApi();
+    private final CommitUtil commitUtil = new CommitUtil();
 
     public Attendance create(Member member, LocalDate date) {
         Attendance attendance = new Attendance(member, date);
@@ -42,7 +42,6 @@ public class AttendanceService {
             updateCommit(member, event);
             //updateTIL(member);
         }
-
     }
 
     private void createDate(Member member) {
@@ -62,7 +61,7 @@ public class AttendanceService {
 
         List<Attendance> attendances = attendanceRepository.findByMember(member);
 
-        PagedIterator<GHCommit> iterator = githubApi.getCommits(member.getGithub());
+        PagedIterator<GHCommit> iterator = commitUtil.getCommits(member.getGithub());
         try {
             while (iterator.hasNext()) {
                 GHCommit commit = iterator.next();
@@ -98,13 +97,13 @@ public class AttendanceService {
         return response;
     }
 
-    public AttendTodayResponseDto readToday(Member member) {
-        LocalDate started_at = member.getEvent().getStarted_at();
-        LocalDate ended_at = member.getEvent().getEnded_at();
+    public AttendTodayResponseDto readToday(Event event, Member member) {
+        LocalDate started_at = event.getStarted_at();
+        LocalDate ended_at = event.getEnded_at();
         Attendance attendance;
 
         if (ended_at.isAfter(LocalDate.now())) {
-            attendance = attendanceRepository.findByMemberAndDate(member.getId(), member.getEvent().getEnded_at())
+            attendance = attendanceRepository.findByMemberAndDate(member.getId(), ended_at)
                     .orElseGet(() -> create(member, LocalDate.now()));
         }
         else if (started_at.isBefore(LocalDate.now())) {

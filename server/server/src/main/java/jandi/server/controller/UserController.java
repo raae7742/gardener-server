@@ -6,7 +6,7 @@ import jandi.server.model.user.User;
 import jandi.server.model.user.dto.UserLoginDto;
 import jandi.server.model.user.dto.UserRequestDto;
 import jandi.server.service.UserService;
-import jandi.server.util.Message;
+import jandi.server.util.response.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class UserController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping("/users")
+    @PostMapping("/users/join")
     public ResponseEntity<Message> join(@RequestBody UserRequestDto requestDto) {
         Message message = Message.builder()
                 .status(StatusEnum.OK)
@@ -31,7 +31,7 @@ public class UserController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-    @PostMapping("/users")
+    @PostMapping("/users/login")
     public ResponseEntity<Message> login(@RequestBody UserLoginDto loginDto) {
         User user = userService.login(loginDto);
         String token = jwtTokenProvider.createToken(user.getUsername(), user.getRoles());

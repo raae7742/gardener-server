@@ -38,7 +38,7 @@ public class AttendanceServiceTest {
     @Test
     public void readOne() {
         //given
-        List<MemberRequestDto> userList = createUserRequestDtos();
+        List<MemberRequestDto> userList = createMemberRequestDtos();
         Event event = createEvent(userList);
         List<Member> members = memberService.findByEvent(event);
 
@@ -52,12 +52,12 @@ public class AttendanceServiceTest {
     @Test
     public void readToday() {
         //given
-        List<MemberRequestDto> userList = createUserRequestDtos();
-        Event event = createEvent(userList);
+        List<MemberRequestDto> memberList = createMemberRequestDtos();
+        Event event = createEvent(memberList);
         List<Member> members = memberService.findByEvent(event);
 
         //when
-        AttendTodayResponseDto dto = attendanceService.readToday(members.get(0));
+        AttendTodayResponseDto dto = attendanceService.readToday(event, members.get(0));
 
         //then
         assertThat(dto.getName()).isEqualTo(members.get(0).getName());
@@ -68,7 +68,7 @@ public class AttendanceServiceTest {
     @Transactional
     public void updateCommit() {
         //given
-        List<MemberRequestDto> userList = createUserRequestDtos();
+        List<MemberRequestDto> userList = createMemberRequestDtos();
         Event event = createEvent(userList);
 
         //when
@@ -78,15 +78,15 @@ public class AttendanceServiceTest {
 
     }
 
-    private List<MemberRequestDto> createUserRequestDtos() {
-        List<MemberRequestDto> userList = new ArrayList<>();
+    private List<MemberRequestDto> createMemberRequestDtos() {
+        List<MemberRequestDto> memberList = new ArrayList<>();
 
-        MemberRequestDto userDto1 = new MemberRequestDto();
-        userDto1.setName("장현애");
-        userDto1.setGithub("aeae1");
-        userList.add(userDto1);
+        MemberRequestDto memberDto1 = new MemberRequestDto();
+        memberDto1.setName("장현애");
+        memberDto1.setGithub("aeae1");
+        memberList.add(memberDto1);
 
-        return userList;
+        return memberList;
     }
 
     private Event createEvent(List<MemberRequestDto> userList) {

@@ -8,7 +8,7 @@ import jandi.server.model.member.Member;
 import jandi.server.service.AttendanceService;
 import jandi.server.service.EventService;
 import jandi.server.service.MemberService;
-import jandi.server.util.Message;
+import jandi.server.util.response.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +58,7 @@ public class AttendanceController {
         List<AttendTodayResponseDto> todayAttendList = new ArrayList<>();
 
         for (Member member : members) {
-            todayAttendList.add(attendanceService.readToday(member));
+            todayAttendList.add(attendanceService.readToday(event, member));
         }
 
         Message message = Message.builder()

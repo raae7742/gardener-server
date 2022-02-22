@@ -3,7 +3,7 @@ package jandi.server.controller;
 import jandi.server.model.*;
 import jandi.server.model.event.dto.EventRequestDto;
 import jandi.server.service.EventService;
-import jandi.server.util.Message;
+import jandi.server.util.response.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

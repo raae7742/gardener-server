@@ -1,4 +1,4 @@
-package jandi.server.util.exception;
+package jandi.server.util.response;
 
 import jandi.server.model.BaseExceptionType;
 import lombok.Getter;

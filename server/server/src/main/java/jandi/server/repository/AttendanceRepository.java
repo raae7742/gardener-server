@@ -17,7 +17,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     List<Attendance> findByDate(LocalDate date);
 
-    @Query(value="SELECT * FROM attendance a WHERE user_id = :id AND date = :date", nativeQuery = true)
+    @Query(value="SELECT * FROM attendance a WHERE member_id = :id AND date = :date", nativeQuery = true)
     Optional<Attendance> findByMemberAndDate(@Param("id") Long id, @Param("date") LocalDate date);
 
 }

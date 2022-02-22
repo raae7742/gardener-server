@@ -23,7 +23,7 @@ public class Attendance extends Timestamped implements Comparable<Attendance>{
     @JoinColumn(name="member_id")
     private Member member;
 
-    @Column(name = "date", unique = true)
+    @Column(name = "date")
     private LocalDate date;
 
     @Convert(converter = BooleanToYNConverter.class)

@@ -2,7 +2,7 @@ package jandi.server.service;
 
 import jandi.server.model.user.enums.UserExceptionType;
 import jandi.server.repository.UserRepository;
-import jandi.server.util.exception.CustomException;
+import jandi.server.util.response.CustomException;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +18,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByName(username)
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new CustomException(UserExceptionType.NOT_FOUND));
     }
 }

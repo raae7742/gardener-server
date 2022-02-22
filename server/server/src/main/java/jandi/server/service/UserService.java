@@ -5,7 +5,7 @@ import jandi.server.model.user.dto.UserLoginDto;
 import jandi.server.model.user.dto.UserRequestDto;
 import jandi.server.model.user.enums.UserExceptionType;
 import jandi.server.repository.UserRepository;
-import jandi.server.util.exception.CustomException;
+import jandi.server.util.response.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,11 +27,11 @@ public class UserService {
         if (validateDuplicateGithub(requestDto.getGithub()))
             throw new CustomException(UserExceptionType.DUPLICATED_USER);
 
-        if (validateDuplicateName(requestDto.getName()))
+        if (validateDuplicateName(requestDto.getUsername()))
             throw new CustomException(UserExceptionType.DUPLICATED_NAME);
 
         User user = User.builder()
-                .username(requestDto.getName())
+                .username(requestDto.getUsername())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .github(requestDto.getGithub())
                 .roles(Collections.singletonList("ROLE_USER"))
@@ -41,7 +41,7 @@ public class UserService {
     }
 
     public User login(UserLoginDto loginDto) {
-        User user = findUserByName(loginDto.getName());
+        User user = findUserByName(loginDto.getUsername());
 
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             throw new CustomException(UserExceptionType.WRONG_PASSWORD);
@@ -60,7 +60,7 @@ public class UserService {
     public List<User> findAllUsers() { return userRepository.findAll();}
 
     private User findUserByName(String name) {
-        return userRepository.findByName(name).orElseThrow(
+        return userRepository.findByUsername(name).orElseThrow(
                 () -> new CustomException(UserExceptionType.NOT_FOUND)
         );
     }
@@ -70,6 +70,6 @@ public class UserService {
     }
 
     private boolean validateDuplicateName(String name) {
-        return userRepository.existsByName(name);
+        return userRepository.existsByUsername(name);
     }
 }

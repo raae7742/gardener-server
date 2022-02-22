@@ -18,8 +18,8 @@ import java.util.List;
 public class Event extends Timestamped {
 
     @Id
-    @Column(name = "event_id", length = 20)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "event_id", length = 20, unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", length = 20)

@@ -35,7 +35,7 @@ public class EventServiceTest {
     @Test
     public void create() {
         //given
-        List<MemberRequestDto> userList = createUserRequestDtos();
+        List<MemberRequestDto> userList = createMemberRequestDtos();
 
         LocalDate started_at = LocalDate.of(2022, 1, 1);
         LocalDate ended_at = LocalDate.of(2022, 1, 2);
@@ -56,7 +56,8 @@ public class EventServiceTest {
     @Test
     public void findCurrentEvents() {
         //given
-        createPastAndCurrentEventRequestDto();
+        createPastEvent();
+        createCurrentEvent();
 
         //when
         List<EventResponseDto> eventDtos = eventService.findCurrentEvents();
@@ -70,7 +71,8 @@ public class EventServiceTest {
     @Test
     public void findPastEvents() {
         //given
-        createPastAndCurrentEventRequestDto();
+        createPastEvent();
+        createCurrentEvent();
 
         //when
         List<EventResponseDto> eventDtos = eventService.findPastEvents();
@@ -81,39 +83,39 @@ public class EventServiceTest {
         }
     }
 
-    private List<MemberRequestDto> createUserRequestDtos() {
-        MemberRequestDto userDto1 = new MemberRequestDto();
-        userDto1.setName("장현애1");
-        userDto1.setGithub("aeae1");
+    private List<MemberRequestDto> createMemberRequestDtos() {
+        MemberRequestDto memberDto = new MemberRequestDto();
+        memberDto.setName("장현애");
+        memberDto.setGithub("raae7742");
 
-        List<MemberRequestDto> userList = new ArrayList<>();
-        userList.add(userDto1);
-        return userList;
+        List<MemberRequestDto> memberList = new ArrayList<>();
+        memberList.add(memberDto);
+        return memberList;
     }
 
-    private EventRequestDto createEventRequestDto(String name, String content, LocalDate start, LocalDate end, List<MemberRequestDto> users) {
+    private EventRequestDto createEventRequestDto(String name, String content, LocalDate start, LocalDate end, List<MemberRequestDto> members) {
         EventRequestDto eventDto = new EventRequestDto();
         eventDto.setName(name);
         eventDto.setContent(content);
         eventDto.setStarted_at(start);
         eventDto.setEnded_at(end);
-        eventDto.setUsers(users);
+        eventDto.setMembers(members);
         return eventDto;
     }
 
-    private void createPastAndCurrentEventRequestDto() {
-        List<MemberRequestDto> userList = createUserRequestDtos();
-
-        LocalDate started_at1 = LocalDate.now().minusDays(2);
-        LocalDate ended_at1 = LocalDate.now().plusDays(2);
-        EventRequestDto eventDto1 = createEventRequestDto("제목1", "내용1", started_at1, ended_at1, userList);
-
-        LocalDate started_at2 = LocalDate.now().minusDays(3);
-        LocalDate ended_at2 = LocalDate.now().minusDays(1);
-        EventRequestDto eventDto2 = createEventRequestDto("제목2", "내용2", started_at2, ended_at2, userList);
-
-        eventStack.add(eventService.create(eventDto1));
-        eventStack.add(eventService.create(eventDto2));
+    private void createPastEvent() {
+        List<MemberRequestDto> memberList = createMemberRequestDtos();
+        LocalDate started_at = LocalDate.now().minusDays(2);
+        LocalDate ended_at = LocalDate.now().plusDays(2);
+        EventRequestDto eventDto = createEventRequestDto("제목1", "내용1", started_at, ended_at, memberList);
+        eventStack.add(eventService.create(eventDto));
     }
 
+    private void createCurrentEvent() {
+        List<MemberRequestDto> memberList = createMemberRequestDtos();
+        LocalDate started_at = LocalDate.now().minusDays(3);
+        LocalDate ended_at = LocalDate.now().minusDays(1);
+        EventRequestDto eventDto = createEventRequestDto("제목2", "내용2", started_at, ended_at, memberList);
+        eventStack.add(eventService.create(eventDto));
+    }
 }

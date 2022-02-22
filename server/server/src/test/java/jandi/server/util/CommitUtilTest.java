@@ -1,18 +1,19 @@
-package jandi.server.util.github;
+package jandi.server.util;
 
+import jandi.server.util.CommitUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class GithubApiTest {
+public class CommitUtilTest {
 
-    GithubApi githubApi = new GithubApi();
+    CommitUtil commitUtil = new CommitUtil();
 
     @Test
     void connection() {
         try {
-            githubApi.getCommits("raae7742");
+            commitUtil.getCommits("raae7742");
         } catch (Exception e) {
             Assertions.fail("connection Error");
         }

@@ -6,7 +6,7 @@ import jandi.server.model.event.dto.EventResponseDto;
 import jandi.server.model.event.enums.EventExceptionType;
 import jandi.server.model.member.Member;
 import jandi.server.repository.EventRepository;
-import jandi.server.util.exception.CustomException;
+import jandi.server.util.response.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class EventService {
 
     private final EventRepository eventRepository;
@@ -27,8 +28,9 @@ public class EventService {
         Event event = eventRepository.save(new Event(requestDto));
         for (int i = 0; i<requestDto.getMembers().size(); i++) {
             Member member = memberService.create(requestDto.getMembers().get(i), event);
-            for (LocalDate date = event.getStarted_at(); date.isBefore(LocalDate.now()); date = date.plusDays(1))
+            for (LocalDate date = event.getStarted_at(); date.isBefore(LocalDate.now()); date = date.plusDays(1)){
                 attendanceService.create(member, date);
+            }
         }
         return event.getId();
     }
@@ -39,7 +41,6 @@ public class EventService {
         );
     }
 
-    @Transactional
     public List<EventResponseDto> findCurrentEvents() {
         List<Event> currentEvents = eventRepository.findCurrentEvents();
 
@@ -50,7 +51,6 @@ public class EventService {
         return eventDtos;
     }
 
-    @Transactional
     public List<EventResponseDto> findPastEvents() {
         List<Event> pastEvents = eventRepository.findPastEvents();
 
@@ -61,7 +61,6 @@ public class EventService {
         return eventDtos;
     }
 
-    @Transactional
     public List<EventResponseDto> findFutureEvents() {
         List<Event> futureEvents = eventRepository.findFutureEvents();
 
@@ -72,7 +71,6 @@ public class EventService {
         return eventDtos;
     }
 
-    @Transactional
     public Event update(Long id, EventRequestDto requestDto) {
         Event event = findOne(id);
         event.update(requestDto);
