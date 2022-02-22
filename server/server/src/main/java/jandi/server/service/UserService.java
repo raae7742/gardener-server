@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -21,36 +22,44 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public User signUp(UserRequestDto requestDto) {
+    public User join(UserRequestDto requestDto) {
+
         if (validateDuplicateGithub(requestDto.getGithub()))
             throw new CustomException(UserExceptionType.DUPLICATED_USER);
+
         if (validateDuplicateName(requestDto.getName()))
             throw new CustomException(UserExceptionType.DUPLICATED_NAME);
 
-        requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-        return userRepository.save(new User(requestDto));
+        User user = User.builder()
+                .username(requestDto.getName())
+                .password(passwordEncoder.encode(requestDto.getPassword()))
+                .github(requestDto.getGithub())
+                .roles(Collections.singletonList("ROLE_USER"))
+                .build();
+
+        return userRepository.save(user);
     }
 
-    public User signIn(UserLoginDto loginDto) {
-        User user = findOne(loginDto.getName());
+    public User login(UserLoginDto loginDto) {
+        User user = findUserByName(loginDto.getName());
+
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             throw new CustomException(UserExceptionType.WRONG_PASSWORD);
         }
-
         return user;
     }
 
     public String updatePassword(String name, String password){
-        User user = findOne(name);
+        User user = findUserByName(name);
         String encodedPassword = passwordEncoder.encode(password);
         user.updatePassword(encodedPassword);
 
         return name;
     }
 
-    public List<User> findUsers() { return userRepository.findAll();}
+    public List<User> findAllUsers() { return userRepository.findAll();}
 
-    private User findOne(String name) {
+    private User findUserByName(String name) {
         return userRepository.findByName(name).orElseThrow(
                 () -> new CustomException(UserExceptionType.NOT_FOUND)
         );

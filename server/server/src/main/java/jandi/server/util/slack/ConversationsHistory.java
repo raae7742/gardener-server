@@ -1,4 +1,4 @@
-package jandi.server.util;
+package jandi.server.util.slack;
 
 import com.slack.api.Slack;
 import com.slack.api.methods.SlackApiException;
@@ -15,9 +15,8 @@ import static java.util.Collections.emptyList;
 @PropertySource("classpath:app.properties")
 public class ConversationsHistory {
 
-    static String channelID = "";
-
-    static String token = "";
+    static String channelID= "C0300NWDLDB";
+    static String token= "xoxb-2402619798853-2998248521476-MEzi7g42022zi8Ol9MZNJ1qa";
 
 
     static Optional<List<Message>> conversationHistory = Optional.empty();

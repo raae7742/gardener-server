@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class GithubApi {
     GitHub github;
-    String token = "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";
+    String token = "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";
 
     public PagedIterator<GHCommit> getCommits(String userId) {
         try { connectToGithub(token); }

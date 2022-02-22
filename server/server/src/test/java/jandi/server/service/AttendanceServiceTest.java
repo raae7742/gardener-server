@@ -60,7 +60,7 @@ public class AttendanceServiceTest {
         AttendTodayResponseDto dto = attendanceService.readToday(members.get(0));
 
         //then
-        assertThat(dto.getUsername()).isEqualTo(members.get(0).getName());
+        assertThat(dto.getName()).isEqualTo(members.get(0).getName());
     }
 
 
@@ -98,13 +98,13 @@ public class AttendanceServiceTest {
         return eventService.findOne(event_id);
     }
 
-    private EventRequestDto createEventRequestDto(String name, String content, LocalDate start, LocalDate end, List<MemberRequestDto> users) {
+    private EventRequestDto createEventRequestDto(String name, String content, LocalDate start, LocalDate end, List<MemberRequestDto> members) {
         EventRequestDto eventDto = new EventRequestDto();
         eventDto.setName(name);
         eventDto.setContent(content);
         eventDto.setStarted_at(start);
         eventDto.setEnded_at(end);
-        eventDto.setUsers(users);
+        eventDto.setMembers(members);
         return eventDto;
     }
 }
