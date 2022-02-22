@@ -1,12 +1,15 @@
 package jandi.server.util.github;
 
 import org.kohsuke.github.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 
 public class GithubApi {
     GitHub github;
-    String token = "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";
+
+    @Value("${github.token}")
+    String token;
 
     public PagedIterator<GHCommit> getCommits(String userId) {
         try { connectToGithub(token); }

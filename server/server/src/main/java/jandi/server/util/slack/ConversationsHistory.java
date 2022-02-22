@@ -4,6 +4,7 @@ import com.slack.api.Slack;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.model.Message;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 
 import java.io.IOException;
@@ -16,7 +17,9 @@ import static java.util.Collections.emptyList;
 public class ConversationsHistory {
 
     static String channelID= "C0300NWDLDB";
-    static String token= "xoxb-2402619798853-2998248521476-MEzi7g42022zi8Ol9MZNJ1qa";
+
+    @Value("${slack.token}")
+    static String token;
 
 
     static Optional<List<Message>> conversationHistory = Optional.empty();
